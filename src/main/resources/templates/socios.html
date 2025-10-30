@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: body(content = ~{::body})}">
+<head th:replace="~{layout :: head}"></head>
+<body>
+<section>
+    <h2>Lista de Socios</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Objetivo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="socio : ${socios}">
+            <td th:text="${socio.idUsuario}"></td>
+            <td th:text="${socio.nombre}"></td>
+            <td th:text="${socio.email}"></td>
+            <td th:text="${socio.telefono}"></td>
+            <td th:text="${socio.objetivo}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</body>
+</html>

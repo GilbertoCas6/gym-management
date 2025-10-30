@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title>Gimnasio ITLA</title>
+    <link rel="stylesheet" th:href="@{/app.css}">
+</head>
+<body>
+<header>
+    <h1>Sistema de Gestión de Gimnasio</h1>
+    <nav>
+        <a th:href="@{/}">Inicio</a> |
+        <a th:href="@{/ui/usuarios}">Usuarios</a> |
+        <a th:href="@{/ui/socios}">Socios</a>
+    </nav>
+</header>
+
+<main th:fragment="body(content)">
+    <div th:insert="${content}"></div>
+</main>
+
+<footer>
+    <p>&copy; 2025 Gimnasio ITLA</p>
+</footer>
+</body>
+</html>
