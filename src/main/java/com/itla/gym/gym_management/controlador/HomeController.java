@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "index"; // archivo index.html
+        return "redirect:/login"; // Redirige al login como página principal
     }
 }
