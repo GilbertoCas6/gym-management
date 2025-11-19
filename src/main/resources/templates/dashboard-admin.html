@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrador</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<!-- Navbar Superior -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="fas fa-user-circle"></i>
+                    <span th:text="${usuario.nombre}">Admin</span>
+                </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/ui/usuarios}"><i class="fas fa-users"></i> Usuarios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/ui/socios}"><i class="fas fa-user-friends"></i> Socios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-calendar-alt"></i> Clases</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-money-bill-wave"></i> Pagos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-chart-line"></i> Reportes</a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-tachometer-alt"></i> Panel de Administración</h1>
+            <p class="text-muted">Bienvenido al sistema de gestión del gimnasio</p>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>150</h3>
+                        <p>Socios Activos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>12</h3>
+                        <p>Entrenadores</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>28</h3>
+                        <p>Clases Activas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>$45,280</h3>
+                        <p>Ingresos del Mes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones Rápidas -->
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bolt"></i> Acciones Rápidas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevoDia">
+                                <i class="fas fa-calendar-plus"></i> Crear Día Disponible
+                            </button>
+                            <button class="btn btn-success">
+                                <i class="fas fa-user-plus"></i> Registrar Nuevo Socio
+                            </button>
+                            <button class="btn btn-info">
+                                <i class="fas fa-clipboard-list"></i> Ver Asistencias
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bell"></i> Notificaciones Recientes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="notification-item">
+                            <i class="fas fa-exclamation-triangle text-warning"></i>
+                            <span>5 pagos próximos a vencer</span>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-user-check text-success"></i>
+                            <span>3 nuevos socios registrados hoy</span>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-calendar text-info"></i>
+                            <span>Clase de Yoga programada para mañana</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Crear Día Disponible -->
+<div class="modal fade" id="modalNuevoDia" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-calendar-plus"></i> Crear Día Disponible</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="fecha" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="horaInicio" class="form-label">Hora Inicio</label>
+                        <input type="time" class="form-control" id="horaInicio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="horaFin" class="form-label">Hora Fin</label>
+                        <input type="time" class="form-control" id="horaFin" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="capacidad" class="form-label">Capacidad</label>
+                        <input type="number" class="form-control" id="capacidad" min="1" max="50" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

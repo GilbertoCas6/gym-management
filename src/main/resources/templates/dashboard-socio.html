@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Socio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<!-- Navbar Superior -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+                <span class="badge bg-info me-3">
+                    <i class="fas fa-user"></i> Socio
+                </span>
+            <span class="text-white me-3">
+                    <i class="fas fa-user-circle"></i>
+                    <span th:text="${usuario.nombre}">Felix Sanchez</span>
+                </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-clipboard-list"></i> Mi Rutina</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-calendar-alt"></i> Mis Clases</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-chart-line"></i> Mi Progreso</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-credit-card"></i> Pagos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-clock"></i> Asistencias</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-user-cog"></i> Mi Perfil</a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-fire"></i> Mi Panel Personal</h1>
+            <p class="text-muted">Bienvenido de nuevo, aquí está tu progreso</p>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>2</h3>
+                        <p>Asistencias (Mes)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>2</h3>
+                        <p>Clases Inscritas</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>1</h3>
+                        <p>Rutina Activa</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="stat-card stat-info">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>28</h3>
+                        <p>Días Restantes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerta de Membresía -->
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <strong>¡Membresía Activa!</strong> Tu pago está al día. Vence el <strong>01/12/2024</strong>.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Sección Principal -->
+        <div class="row g-4 mb-4">
+            <!-- Mi Rutina Actual -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5><i class="fas fa-clipboard-list"></i> Mi Rutina Actual</h5>
+                        <span class="badge bg-success">ACTIVA</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="rutina-header mb-4">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="text-primary mb-2">
+                                        <i class="fas fa-fire"></i> Hipertrofia
+                                    </h4>
+                                    <p class="text-muted mb-3">Rutina de volumen muscular</p>
+                                    <div class="rutina-details">
+                                            <span class="detail-badge">
+                                                <i class="fas fa-bullseye"></i> Aumentar 5kg de masa muscular
+                                            </span>
+                                        <span class="detail-badge">
+                                                <i class="fas fa-signal"></i> Nivel: Intermedio
+                                            </span>
+                                        <span class="detail-badge">
+                                                <i class="fas fa-calendar"></i> Duración: 12 semanas
+                                            </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="progress-circle">
+                                        <div class="circle-content">
+                                            <h2>8%</h2>
+                                            <p>Completado</p>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">1 de 12 semanas</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información del Entrenador -->
+                        <div class="trainer-info mb-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="trainer-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Tu Entrenador</h6>
+                                    <p class="mb-0"><strong>Gaudi Valera</strong></p>
+                                    <small class="text-muted">Especialidad: Entrenamiento Funcional y CrossFit</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plan Semanal -->
+                        <div class="plan-semanal">
+                            <h6 class="mb-3"><i class="fas fa-calendar-week"></i> Plan de Esta Semana</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="workout-day">
+                                        <div class="day-header bg-primary">
+                                            <i class="fas fa-dumbbell"></i> LUNES - Pecho y Tríceps
+                                        </div>
+                                        <ul class="exercise-list">
+                                            <li><i class="fas fa-check-circle text-success"></i> Press de banca - 4x10</li>
+                                            <li><i class="fas fa-check-circle text-success"></i> Aperturas con mancuernas - 3x12</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Fondos en paralelas - 3x12</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Extensión de tríceps - 3x15</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="workout-day">
+                                        <div class="day-header bg-success">
+                                            <i class="fas fa-running"></i> MIÉRCOLES - Piernas
+                                        </div>
+                                        <ul class="exercise-list">
+                                            <li><i class="fas fa-circle text-muted"></i> Sentadillas - 4x10</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Peso muerto - 4x8</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Prensa - 3x12</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Extensiones - 3x15</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="workout-day">
+                                        <div class="day-header bg-info">
+                                            <i class="fas fa-hands"></i> VIERNES - Espalda y Bíceps
+                                        </div>
+                                        <ul class="exercise-list">
+                                            <li><i class="fas fa-circle text-muted"></i> Dominadas - 4x8</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Remo con barra - 4x10</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Curl con barra - 3x12</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Curl martillo - 3x12</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="workout-day">
+                                        <div class="day-header bg-warning">
+                                            <i class="fas fa-fire-alt"></i> SÁBADO - Cardio
+                                        </div>
+                                        <ul class="exercise-list">
+                                            <li><i class="fas fa-circle text-muted"></i> HIIT - 20 minutos</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Caminata inclinada - 15 min</li>
+                                            <li><i class="fas fa-circle text-muted"></i> Abdominales - 3x20</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Derecho -->
+            <div class="col-lg-4">
+                <!-- Mis Clases -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-calendar-alt"></i> Mis Clases</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="clase-item">
+                            <div class="clase-day">LUN</div>
+                            <div class="clase-info">
+                                <strong>CrossFit Matutino</strong>
+                                <small><i class="fas fa-clock"></i> 07:00 - 08:00</small>
+                                <small><i class="fas fa-user-tie"></i> Gaudi Valera</small>
+                            </div>
+                        </div>
+                        <div class="clase-item">
+                            <div class="clase-day">MIE</div>
+                            <div class="clase-info">
+                                <strong>Funcional Vespertino</strong>
+                                <small><i class="fas fa-clock"></i> 18:00 - 18:45</small>
+                                <small><i class="fas fa-user-tie"></i> Gaudi Valera</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3">
+                            <i class="fas fa-plus"></i> Inscribirse a Más Clases
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Estado de Pago -->
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-credit-card"></i> Mi Membresía</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="membresia-info">
+                            <div class="membresia-type">
+                                <i class="fas fa-star text-warning"></i>
+                                <strong>MENSUAL</strong>
+                            </div>
+                            <div class="membresia-amount">
+                                <h3>$1,500.00</h3>
+                            </div>
+                            <div class="membresia-status">
+                                    <span class="badge bg-success w-100">
+                                        <i class="fas fa-check-circle"></i> ACTIVA
+                                    </span>
+                            </div>
+                            <hr>
+                            <div class="membresia-details">
+                                <div class="detail-row">
+                                    <span>Fecha de Pago:</span>
+                                    <strong>01/11/2024</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Vencimiento:</span>
+                                    <strong class="text-success">01/12/2024</strong>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Método:</span>
+                                    <strong>Tarjeta</strong>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary w-100 mt-3">
+                                <i class="fas fa-download"></i> Descargar Recibo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recordatorios -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bell"></i> Notificaciones</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="notification-item">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <span>Tu rutina ha sido asignada por el entrenador Gaudi Valera.</span>
+                        </div>
+                        <div class="notification-item">
+                            <i class="fas fa-calendar-check text-success"></i>
+                            <span>Próxima clase: Lunes 07:00 AM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de Asistencias -->
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock"></i> Mi Historial de Asistencias</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th><i class="fas fa-calendar"></i> Fecha</th>
+                                    <th><i class="fas fa-sign-in-alt"></i> Hora Entrada</th>
+                                    <th><i class="fas fa-sign-out-alt"></i> Hora Salida</th>
+                                    <th><i class="fas fa-clock"></i> Duración</th>
+                                    <th><i class="fas fa-chart-bar"></i> Estado</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td><strong>02/11/2024</strong></td>
+                                    <td>18:00</td>
+                                    <td>19:15</td>
+                                    <td>1h 15min</td>
+                                    <td><span class="badge bg-success">Completado</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>01/11/2024</strong></td>
+                                    <td>07:00</td>
+                                    <td>08:30</td>
+                                    <td>1h 30min</td>
+                                    <td><span class="badge bg-success">Completado</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
