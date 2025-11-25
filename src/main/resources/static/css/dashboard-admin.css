@@ -1,0 +1,52 @@
+/* ============================================
+   DASHBOARD-ADMIN.CSS
+   Estilos específicos para el dashboard del administrador
+   ============================================ */
+
+/* Estilos específicos del admin - Por ahora vacío */
+/* Se agregarán estilos cuando se añadan funcionalidades específicas */
+
+/* Gráficas y reportes (cuando se implementen) */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 1rem 0;
+}
+
+/* Tablas de gestión (cuando se implementen) */
+.admin-table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Filtros avanzados (cuando se implementen) */
+.admin-filters {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+/* Responsive específico para admin */
+@media (max-width: 768px) {
+    .admin-table-actions {
+        flex-direction: column;
+    }
+}
+
+/* Colores oscuros para footers de tarjetas */
+.bg-primary-dark {
+    background-color: #0099cc !important;
+}
+
+.bg-success-dark {
+    background-color: #218838 !important;
+}
+
+.bg-warning-dark {
+    background-color: #e68a00 !important;
+}
+
+.bg-info-dark {
+    background-color: #138496 !important;
+}
