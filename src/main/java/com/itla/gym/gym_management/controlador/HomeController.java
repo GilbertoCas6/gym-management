@@ -1,5 +1,7 @@
 package com.itla.gym.gym_management.controlador;
 
+import com.itla.gym.gym_management.servicio.ClaseServicio;
+import com.itla.gym.gym_management.modelo.Clase;
 import com.itla.gym.gym_management.modelo.Usuario;
 import com.itla.gym.gym_management.servicio.UsuarioServicio;
 import jakarta.servlet.http.HttpSession;
@@ -15,6 +17,9 @@ public class HomeController {
 
     @Autowired
     private UsuarioServicio usuarioServicio;
+
+    @Autowired
+    private ClaseServicio claseServicio;
 
     @GetMapping("/")
     public String home() {
@@ -56,11 +61,15 @@ public class HomeController {
         List<Usuario> entrenadores = usuarioServicio.listarPorRol(Usuario.Rol.ENTRENADOR);
         List<Usuario> clientesActivos = usuarioServicio.listarClientesActivos();
 
+        // Estadísticas de clases
+        List<Clase> todasClases = claseServicio.listarClases();
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("totalUsuarios", todosUsuarios.size());
         model.addAttribute("totalClientes", clientes.size());
         model.addAttribute("totalEntrenadores", entrenadores.size());
         model.addAttribute("clientesActivos", clientesActivos.size());
+        model.addAttribute("totalClases", todasClases.size());
 
         return "dashboard-admin";
     }
