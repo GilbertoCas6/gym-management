@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clases</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-admin.css}">
+</head>
+<body>
+<!-- Navbar Superior -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard}">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+            <span class="text-white me-3">
+                <i class="fas fa-user-circle"></i>
+                <span th:text="${usuario.nombre}">Admin</span>
+            </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/dashboard}"><i class="fas fa-home"></i> Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/admin/usuarios}"><i class="fas fa-users"></i> Usuarios</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" th:href="@{/admin/clases}"><i class="fas fa-calendar-alt"></i> Clases</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-dumbbell"></i> Rutinas</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-money-bill-wave"></i> Pagos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-chart-line"></i> Reportes</a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-calendar-alt"></i> Gestión de Clases</h1>
+            <p class="text-muted">Administra las clases y horarios del gimnasio</p>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Botón Crear Clase -->
+        <div class="mb-4">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearClase">
+                <i class="fas fa-plus-circle"></i> Crear Nueva Clase
+            </button>
+        </div>
+
+        <!-- Tarjetas de Estadísticas -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-primary" th:text="${#lists.size(clases)}">0</h3>
+                        <p class="mb-0">Total Clases</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-success" th:text="${clasesActivas ?: 0}">0</h3>
+                        <p class="mb-0">Clases Activas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-warning" id="totalEntrenadores">0</h3>
+                        <p class="mb-0">Entrenadores</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Clases -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-list"></i> Lista de Clases</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Entrenador</th>
+                            <th>Día</th>
+                            <th>Hora</th>
+                            <th>Duración</th>
+                            <th>Capacidad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="clase : ${clases}">
+                            <td th:text="${clase.id}"></td>
+                            <td th:text="${clase.nombre}"></td>
+                            <td th:text="${clase.entrenador != null ? clase.entrenador.nombre : 'Sin asignar'}"></td>
+                            <td th:text="${clase.diaSemana}"></td>
+                            <td th:text="${clase.horaInicio}"></td>
+                            <td th:text="${clase.duracion + ' min'}"></td>
+                            <td th:text="${clase.capacidadMaxima + ' personas'}"></td>
+                            <td>
+                                <span th:if="${clase.activa}" class="badge bg-success">
+                                    <i class="fas fa-check-circle"></i> ACTIVA
+                                </span>
+                                <span th:unless="${clase.activa}" class="badge bg-secondary">
+                                    <i class="fas fa-times-circle"></i> INACTIVA
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btn-editar"
+                                        th:data-id="${clase.id}"
+                                        th:data-nombre="${clase.nombre}"
+                                        th:data-descripcion="${clase.descripcion}"
+                                        th:data-entrenador="${clase.idEntrenador}"
+                                        th:data-dia="${clase.diaSemana}"
+                                        th:data-hora="${clase.horaInicio}"
+                                        th:data-duracion="${clase.duracion}"
+                                        th:data-capacidad="${clase.capacidadMaxima}"
+                                        th:data-activa="${clase.activa}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEditarClase"
+                                        title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-danger btn-eliminar"
+                                        th:data-id="${clase.id}"
+                                        th:data-nombre="${clase.nombre}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEliminarClase"
+                                        title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Crear Clase -->
+<div class="modal fade" id="modalCrearClase" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus-circle"></i> Crear Nueva Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form th:action="@{/admin/clases/crear}" method="post">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre de la Clase *</label>
+                            <input type="text" class="form-control" name="nombre" required
+                                   placeholder="Ej: Yoga Matutino">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Entrenador *</label>
+                            <select class="form-control" name="idEntrenador" required>
+                                <option value="">Seleccionar entrenador</option>
+                                <option th:each="entrenador : ${entrenadores}"
+                                        th:value="${entrenador.id}"
+                                        th:text="${entrenador.nombre}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Día de la Semana *</label>
+                            <select class="form-control" name="diaSemana" required>
+                                <option value="">Seleccionar día</option>
+                                <option value="Lunes">Lunes</option>
+                                <option value="Martes">Martes</option>
+                                <option value="Miércoles">Miércoles</option>
+                                <option value="Jueves">Jueves</option>
+                                <option value="Viernes">Viernes</option>
+                                <option value="Sábado">Sábado</option>
+                                <option value="Domingo">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Hora de Inicio *</label>
+                            <input type="time" class="form-control" name="horaInicio" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Duración (minutos) *</label>
+                            <input type="number" class="form-control" name="duracion" required
+                                   placeholder="60" min="15" max="180">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Capacidad Máxima *</label>
+                            <input type="number" class="form-control" name="capacidadMaxima" required
+                                   placeholder="20" min="1" max="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripción</label>
+                            <input type="text" class="form-control" name="descripcion"
+                                   placeholder="Breve descripción de la clase">
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="createActiva" checked>
+                        <input type="hidden" name="activa" id="createActivaHidden" value="true">
+                        <label class="form-check-label">Clase Activa</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Crear Clase
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Editar Clase -->
+<div class="modal fade" id="modalEditarClase" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Editar Clase</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formEditarClase" method="post">
+                <input type="hidden" id="editId" name="id">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre de la Clase *</label>
+                            <input type="text" class="form-control" id="editNombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Entrenador *</label>
+                            <select class="form-control" id="editIdEntrenador" name="idEntrenador" required>
+                                <option value="">Seleccionar entrenador</option>
+                                <option th:each="entrenador : ${entrenadores}"
+                                        th:value="${entrenador.id}"
+                                        th:text="${entrenador.nombre}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Día de la Semana *</label>
+                            <select class="form-control" id="editDiaSemana" name="diaSemana" required>
+                                <option value="">Seleccionar día</option>
+                                <option value="Lunes">Lunes</option>
+                                <option value="Martes">Martes</option>
+                                <option value="Miércoles">Miércoles</option>
+                                <option value="Jueves">Jueves</option>
+                                <option value="Viernes">Viernes</option>
+                                <option value="Sábado">Sábado</option>
+                                <option value="Domingo">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Hora de Inicio *</label>
+                            <input type="time" class="form-control" id="editHoraInicio" name="horaInicio" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Duración (minutos) *</label>
+                            <input type="number" class="form-control" id="editDuracion" name="duracion" required
+                                   min="15" max="180">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Capacidad Máxima *</label>
+                            <input type="number" class="form-control" id="editCapacidadMaxima" name="capacidadMaxima" required
+                                   min="1" max="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="editDescripcion" name="descripcion">
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="editActiva">
+                        <input type="hidden" name="activa" id="editActivaHidden">
+                        <label class="form-check-label">Clase Activa</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Eliminar Clase -->
+<div class="modal fade" id="modalEliminarClase" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar la clase <strong id="deleteNombre"></strong>?</p>
+                <p class="text-danger"><i class="fas fa-warning"></i> Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="formEliminarClase" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/gestion-clases.js}"></script>
+</body>
+</html>
