@@ -17,6 +17,22 @@ public class UsuarioServicio {
         return usuarioRepositorio.findAll();
     }
 
+    public List<Usuario> listarPorRol(Usuario.Rol rol) {
+        return usuarioRepositorio.findByRol(rol);
+    }
+
+    public List<Usuario> listarClientesDeEntrenador(Long idEntrenador) {
+        return usuarioRepositorio.findByIdEntrenador(idEntrenador);
+    }
+
+    public List<Usuario> listarClientesActivos() {
+        return usuarioRepositorio.findByRolAndActivo(Usuario.Rol.CLIENTE, true);
+    }
+
+    public List<Usuario> listarEntrenadoresActivos() {
+        return usuarioRepositorio.findByRolAndActivo(Usuario.Rol.ENTRENADOR, true);
+    }
+
     public Usuario guardarUsuario(Usuario usuario) {
         return usuarioRepositorio.save(usuario);
     }
@@ -25,33 +41,15 @@ public class UsuarioServicio {
         return usuarioRepositorio.findById(id).orElse(null);
     }
 
-    public void eliminarUsuario(Long id) {
-        usuarioRepositorio.deleteById(id);
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepositorio.findByEmail(email);
     }
 
-    // Método para autenticar usuario
-    public Usuario autenticar(String email, String password) {
-        Usuario usuario = usuarioRepositorio.findByEmail(email);
-
-        if (usuario != null && usuario.getPassword().equals(password)) {
-            return usuario;
-        }
-        return null;
-    }
-
-    // Método para registrar nuevo usuario
-    public Usuario registrarUsuario(Usuario usuario) {
-        // TODO: Aquí deberías encriptar la contraseña con BCrypt
-        // Por ahora se guarda en texto plano para el demo
-        usuario.setActivo(true);
-        if (usuario.getRol() == null) {
-            usuario.setRol(Usuario.Rol.SOCIO);
-        }
-        return usuarioRepositorio.save(usuario);
-    }
-
-    // Verificar si existe un email
     public boolean existeEmail(String email) {
         return usuarioRepositorio.findByEmail(email) != null;
+    }
+
+    public void eliminarUsuario(Long id) {
+        usuarioRepositorio.deleteById(id);
     }
 }

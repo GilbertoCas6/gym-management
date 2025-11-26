@@ -14,25 +14,35 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Rol rol = Rol.SOCIO; // Por defecto es SOCIO
+    private String telefono;
 
-    @Column(nullable = false)
+    @Column(name = "fecha_ingreso")
+    private String fechaIngreso;
+
+    private String objetivo;
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
+
     private boolean activo = true;
+
+    @Column(name = "id_entrenador")
+    private Long idEntrenador;  // Para clientes: su entrenador asignado
+
+    // Relación: Un cliente tiene un entrenador (opcional)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_entrenador", insertable = false, updatable = false)
+    private Usuario entrenador;
 
     public enum Rol {
         ADMIN,
         ENTRENADOR,
-        SOCIO
+        CLIENTE
     }
 }
