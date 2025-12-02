@@ -1,0 +1,63 @@
+/* ============================================
+   GESTION-RUTINAS.CSS
+   Estilos específicos para el módulo de rutinas
+   ============================================ */
+
+/* Contenedor de filtros de rutinas (si usas filtros) */
+.rutinas-filtros {
+    background: var(--light-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+/* Acciones por fila (editar / eliminar / ver) */
+.rutinas-table-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Badges de estado */
+.badge-rutina-activa {
+    background-color: #28a745;
+}
+
+.badge-rutina-inactiva {
+    background-color: #6c757d;
+}
+
+/* Texto pequeño para info de cliente / entrenador */
+.rutina-meta {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rutinas-table-actions {
+        flex-direction: column;
+    }
+}
+
+
+
+.btn-rutina-editar:hover {
+    filter: brightness(1.08);
+}
+
+
+
+/* === Botón Editar Rutina (mismo color amarillo que usuarios) === */
+.btn-rutina-editar {
+    background: linear-gradient(135deg, #FFB84D, #FFA500) !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    transition: 0.2s ease;
+}
+
+.btn-rutina-editar:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}

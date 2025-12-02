@@ -10,6 +10,12 @@ import java.util.List;
 @Service
 public class UsuarioServicio {
 
+    public List<Usuario> obtenerClientes() {
+        return usuarioRepositorio.findByRol(Usuario.Rol.CLIENTE);
+    }
+
+
+
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
 

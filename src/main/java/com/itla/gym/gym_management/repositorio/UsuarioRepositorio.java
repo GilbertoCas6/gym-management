@@ -13,6 +13,8 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Long> {
 
     List<Usuario> findByRol(Usuario.Rol rol);
 
+
+
     // Para encontrar todos los clientes de un entrenador específico
     List<Usuario> findByIdEntrenador(Long idEntrenador);
 

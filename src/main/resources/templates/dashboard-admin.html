@@ -29,41 +29,52 @@
 </nav>
 
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" th:href="@{/dashboard}">
-                    <i class="fas fa-home"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/usuarios}">
-                    <i class="fas fa-users"></i> Usuarios
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/clases}">
-                    <i class="fas fa-calendar-alt"></i> Clases
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;">
-                    <i class="fas fa-dumbbell"></i> Rutinas
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;">
-                    <i class="fas fa-money-bill-wave"></i> Pagos
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;">
-                    <i class="fas fa-chart-line"></i> Reportes
-                </a>
-            </li>
-        </ul>
-    </aside>
+<!--    &lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul class="nav flex-column">-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link active" th:href="@{/dashboard/admin}">-->
+<!--                    <i class="fas fa-home"></i> Dashboard-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/usuarios}">-->
+<!--                    <i class="fas fa-users"></i> Usuarios-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/clases}">-->
+<!--                    <i class="fas fa-calendar-alt"></i> Clases-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; RUTINAS (ACTIVADA) &ndash;&gt;-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/rutinas}">-->
+<!--                    <i class="fas fa-dumbbell"></i> Rutinas-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/pagos}">-->
+<!--                    <i class="fas fa-money-bill-wave"></i> Pagos-->
+<!--                </a>-->
+<!--            </li>-->
+
+
+<!--            &lt;!&ndash; REPORTES (DESHABILITADO) &ndash;&gt;-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link disabled" href="#" style="opacity: 0.5;">-->
+<!--                    <i class="fas fa-chart-line"></i> Reportes-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--        </ul>-->
+<!--    </aside>-->
+
 
     <!-- Contenido Principal -->
     <main class="main-content">
@@ -74,87 +85,25 @@
 
         <!-- Tarjetas de Estadísticas -->
         <div class="row g-3 mb-4">
+
             <div class="col-md-3">
-                <div class="card stat-card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-white-50 mb-2">Total Usuarios</h6>
-                                <h2 class="mb-0" th:text="${totalUsuarios}">0</h2>
-                            </div>
-                            <div class="stat-icon">
-                                <i class="fas fa-users fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-primary-dark">
-                        <a th:href="@{/admin/usuarios}" class="text-white text-decoration-none">
-                            Ver todos <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+                <!-- tarjeta 1 -->
             </div>
 
             <div class="col-md-3">
-                <div class="card stat-card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-white-50 mb-2">Clientes</h6>
-                                <h2 class="mb-0" th:text="${totalClientes}">0</h2>
-                            </div>
-                            <div class="stat-icon">
-                                <i class="fas fa-user fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-success-dark">
-                            <span class="text-white">
-                                <span th:text="${clientesActivos}">0</span> activos
-                            </span>
-                    </div>
-                </div>
+                <!-- tarjeta 2 -->
             </div>
 
             <div class="col-md-3">
-                <div class="card stat-card bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-white-50 mb-2">Entrenadores</h6>
-                                <h2 class="mb-0" th:text="${totalEntrenadores}">0</h2>
-                            </div>
-                            <div class="stat-icon">
-                                <i class="fas fa-dumbbell fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-warning-dark">
-                        <span class="text-white">Personal activo</span>
-                    </div>
-                </div>
+                <!-- tarjeta 3 -->
             </div>
 
             <div class="col-md-3">
-                <div class="card stat-card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="text-white-50 mb-2">Clases</h6>
-                                <h2 class="mb-0" th:text="${totalClases ?: 0}">0</h2>
-                            </div>
-                            <div class="stat-icon">
-                                <i class="fas fa-calendar-alt fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-info-dark">
-                        <a th:href="@{/admin/clases}" class="text-white text-decoration-none">
-                            Gestionar <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+                <!-- tarjeta 4 -->
             </div>
+
+        </div> <!-- ESTE ERA EL QUE FALTABA -->
+
 
         <!-- Sección de Accesos Rápidos -->
         <div class="row g-3 mb-4">
@@ -165,35 +114,45 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
+
+                            <!-- Crear Usuario -->
                             <div class="col-md-3">
                                 <a th:href="@{/admin/usuarios}" class="btn btn-outline-primary w-100 p-3">
                                     <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
                                     <span>Crear Usuario</span>
                                 </a>
                             </div>
+
+                            <!-- Nueva Clase -->
                             <div class="col-md-3">
                                 <a th:href="@{/admin/clases}" class="btn btn-outline-primary w-100 p-3">
                                     <i class="fas fa-calendar-plus fa-2x d-block mb-2"></i>
                                     <span>Nueva Clase</span>
                                 </a>
                             </div>
+
+                            <!-- Registrar Pago -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
+                                <a th:href="@{/admin/pagos}" class="btn btn-outline-primary w-100 p-3">
                                     <i class="fas fa-file-invoice-dollar fa-2x d-block mb-2"></i>
                                     <span>Registrar Pago</span>
                                 </a>
                             </div>
+
+                            <!-- Rutinas -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
-                                    <i class="fas fa-chart-bar fa-2x d-block mb-2"></i>
-                                    <span>Ver Reportes</span>
+                                <a th:href="@{/admin/rutinas}" class="btn btn-outline-primary w-100 p-3">
+                                    <i class="fas fa-dumbbell fa-2x d-block mb-2"></i>
+                                    <span>Rutinas</span>
                                 </a>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Actividad Reciente -->
         <div class="row g-3">
