@@ -1,205 +1,226 @@
--- ============================================
--- BASE DE DATOS: GIMNASIO
--- Sistema de Gestión de Gimnasio (VERSIÓN FINAL)
--- ============================================
+-- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+--
+-- Host: localhost    Database: gimnasio
+-- ------------------------------------------------------
+-- Server version	8.0.41
 
--- Eliminar base de datos si existe y crear nueva
-DROP DATABASE IF EXISTS gimnasio;
-CREATE DATABASE gimnasio CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci;
-USE gimnasio;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- ============================================
--- TABLA: usuarios
--- Almacena TODOS los usuarios del sistema
--- Roles: ADMIN, ENTRENADOR, CLIENTE
--- ============================================
-CREATE TABLE usuarios (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    telefono VARCHAR(20),
-    fecha_ingreso DATE,
-    objetivo VARCHAR(100),
-    rol ENUM('ADMIN', 'ENTRENADOR', 'CLIENTE') NOT NULL DEFAULT 'CLIENTE',
-    activo BOOLEAN NOT NULL DEFAULT TRUE,
-    id_entrenador BIGINT NULL,  -- Para clientes: su entrenador asignado
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    -- Foreign key: un cliente puede tener un entrenador
-    CONSTRAINT fk_usuario_entrenador 
-        FOREIGN KEY (id_entrenador) 
-        REFERENCES usuarios(id) 
-        ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--
+-- Table structure for table `asistencias`
+--
 
--- ============================================
--- TABLA: clases
--- Clases grupales del gimnasio
--- ============================================
-CREATE TABLE clases (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    descripcion TEXT,
-    id_entrenador BIGINT NOT NULL,
-    dia_semana VARCHAR(20) NOT NULL,  -- Lunes, Martes, etc.
-    hora_inicio TIME NOT NULL,
-    duracion INT NOT NULL,  -- Duración en minutos
-    capacidad_maxima INT NOT NULL DEFAULT 20,
-    activa BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_clase_entrenador 
-        FOREIGN KEY (id_entrenador) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `asistencias`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `asistencias` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_cliente` bigint NOT NULL,
+  `fecha` date NOT NULL,
+  `hora_entrada` time NOT NULL,
+  `hora_salida` time DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_asistencia_cliente` (`id_cliente`),
+  CONSTRAINT `fk_asistencia_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ============================================
--- TABLA: inscripciones_clases
--- Relación entre clientes y clases
--- ============================================
-CREATE TABLE inscripciones_clases (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_cliente BIGINT NOT NULL,
-    id_clase BIGINT NOT NULL,
-    fecha_inscripcion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_inscripcion_cliente 
-        FOREIGN KEY (id_cliente) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE,
-    
-    CONSTRAINT fk_inscripcion_clase 
-        FOREIGN KEY (id_clase) 
-        REFERENCES clases(id) 
-        ON DELETE CASCADE,
-    
-    -- Un cliente no puede inscribirse dos veces a la misma clase
-    UNIQUE KEY uk_cliente_clase (id_cliente, id_clase)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--
+-- Dumping data for table `asistencias`
+--
 
--- ============================================
--- TABLA: rutinas
--- Rutinas de ejercicios asignadas a clientes
--- ============================================
-CREATE TABLE rutinas (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(255) NOT NULL,
-    descripcion TEXT,
-    id_cliente BIGINT NOT NULL,
-    id_entrenador BIGINT NOT NULL,
-    objetivo VARCHAR(255),
-    dias_semana VARCHAR(255),  -- Ej: "Lunes,Miércoles,Viernes"
-    duracion_semanas INT,
-    activa BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_rutina_cliente 
-        FOREIGN KEY (id_cliente) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE,
-    
-    CONSTRAINT fk_rutina_entrenador 
-        FOREIGN KEY (id_entrenador) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+LOCK TABLES `asistencias` WRITE;
+/*!40000 ALTER TABLE `asistencias` DISABLE KEYS */;
+/*!40000 ALTER TABLE `asistencias` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ============================================
--- TABLA: pagos
--- Registro de pagos de membresías
--- ============================================
-CREATE TABLE pagos (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_cliente BIGINT NOT NULL,
-    monto DECIMAL(10,2) NOT NULL,
-    tipo_membresia VARCHAR(50) NOT NULL,  -- MENSUAL, TRIMESTRAL, ANUAL
-    fecha_pago DATE NOT NULL,
-    fecha_vencimiento DATE NOT NULL,
-    metodo_pago VARCHAR(50),  -- EFECTIVO, TARJETA, TRANSFERENCIA
-    estado VARCHAR(20) NOT NULL DEFAULT 'ACTIVO',  -- ACTIVO, VENCIDO
-    notas TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_pago_cliente 
-        FOREIGN KEY (id_cliente) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+--
+-- Table structure for table `clases`
+--
 
--- ============================================
--- TABLA: asistencias
--- Registro de entrada/salida del gimnasio
--- ============================================
-CREATE TABLE asistencias (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_cliente BIGINT NOT NULL,
-    fecha DATE NOT NULL,
-    hora_entrada TIME NOT NULL,
-    hora_salida TIME,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    CONSTRAINT fk_asistencia_cliente 
-        FOREIGN KEY (id_cliente) 
-        REFERENCES usuarios(id) 
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `clases`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `clases` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text,
+  `id_entrenador` bigint NOT NULL,
+  `dia_semana` varchar(20) NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `duracion` int NOT NULL,
+  `capacidad_maxima` int NOT NULL DEFAULT '20',
+  `activa` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_clase_entrenador` (`id_entrenador`),
+  CONSTRAINT `fk_clase_entrenador` FOREIGN KEY (`id_entrenador`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- ============================================
--- INSERTAR DATOS DE PRUEBA
--- ============================================
+--
+-- Dumping data for table `clases`
+--
 
--- USUARIOS (Admin, Entrenador, Cliente)
-INSERT INTO usuarios (nombre, email, password, telefono, fecha_ingreso, objetivo, rol, activo) VALUES
--- Admin
-('Gilberto Castillo', 'gilberto@gym.com', 'admin123', '809-111-1111', '2024-01-01', NULL, 'ADMIN', TRUE),
+LOCK TABLES `clases` WRITE;
+/*!40000 ALTER TABLE `clases` DISABLE KEYS */;
+INSERT INTO `clases` VALUES (1,'CrossFit Matutino','Entrenamiento funcional de alta intensidad',2,'Lunes','07:00:00',60,20,1,'2025-12-02 02:30:51'),(2,'Funcional Vespertino','Entrenamiento funcional para todos los niveles',2,'Miércoles','18:00:00',60,20,1,'2025-12-02 02:30:51'),(3,'Yoga matutino','Aca daremos la clase de yoga',2,'Martes','14:13:00',20,5,1,'2025-12-02 17:13:48'),(4,'CARDIO EXTREMO','Fecha: 2025-12-02 - sdasd',2,'TUESDAY','18:00:00',60,20,1,'2025-12-02 22:40:00');
+/*!40000 ALTER TABLE `clases` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- Entrenador
-('Gaudi Valera', 'gaudi@gym.com', 'trainer123', '809-222-2222', '2024-01-05', NULL, 'ENTRENADOR', TRUE),
+--
+-- Table structure for table `inscripciones_clases`
+--
 
--- Cliente (asignado a Gaudi)
-('Felix Sanchez', 'felix@gym.com', 'cliente123', '809-333-3333', '2024-01-15', 'Ganancia muscular', 'CLIENTE', TRUE);
+DROP TABLE IF EXISTS `inscripciones_clases`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `inscripciones_clases` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_cliente` bigint NOT NULL,
+  `id_clase` bigint NOT NULL,
+  `fecha_inscripcion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_cliente_clase` (`id_cliente`,`id_clase`),
+  KEY `fk_inscripcion_clase` (`id_clase`),
+  CONSTRAINT `fk_inscripcion_clase` FOREIGN KEY (`id_clase`) REFERENCES `clases` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_inscripcion_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- Asignar Felix a Gaudi como su entrenador
-UPDATE usuarios SET id_entrenador = 2 WHERE id = 3;
+--
+-- Dumping data for table `inscripciones_clases`
+--
 
--- CLASES (2 clases de Gaudi)
-INSERT INTO clases (nombre, descripcion, id_entrenador, dia_semana, hora_inicio, duracion, capacidad_maxima, activa) VALUES
-('CrossFit Matutino', 'Entrenamiento funcional de alta intensidad', 2, 'Lunes', '07:00:00', 60, 15, TRUE),
-('Funcional Vespertino', 'Entrenamiento funcional para todos los niveles', 2, 'Miércoles', '18:00:00', 60, 20, TRUE);
+LOCK TABLES `inscripciones_clases` WRITE;
+/*!40000 ALTER TABLE `inscripciones_clases` DISABLE KEYS */;
+/*!40000 ALTER TABLE `inscripciones_clases` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- INSCRIPCIONES (Felix inscrito en las 2 clases)
-INSERT INTO inscripciones_clases (id_cliente, id_clase) VALUES
-(3, 1),  -- Felix en CrossFit Matutino
-(3, 2);  -- Felix en Funcional Vespertino
+--
+-- Table structure for table `pagos`
+--
 
--- RUTINA (Gaudi le asigna rutina a Felix)
-INSERT INTO rutinas (nombre, descripcion, id_cliente, id_entrenador, objetivo, dias_semana, duracion_semanas, activa) VALUES
-('Rutina de Hipertrofia', 
- 'Programa de entrenamiento enfocado en ganancia de masa muscular. Incluye ejercicios compuestos y aislados.',
- 3, 
- 2, 
- 'Aumentar 5kg de masa muscular', 
- 'Lunes,Miércoles,Viernes',
- 12,
- TRUE);
+DROP TABLE IF EXISTS `pagos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pagos` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_cliente` bigint NOT NULL,
+  `monto` decimal(10,2) NOT NULL,
+  `tipo_membresia` varchar(50) NOT NULL,
+  `fecha_pago` date NOT NULL,
+  `fecha_vencimiento` date NOT NULL,
+  `metodo_pago` varchar(50) DEFAULT NULL,
+  `estado` varchar(20) NOT NULL DEFAULT 'ACTIVO',
+  `notas` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_pago_cliente` (`id_cliente`),
+  CONSTRAINT `fk_pago_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
--- PAGO (Felix tiene membresía activa)
-INSERT INTO pagos (id_cliente, monto, tipo_membresia, fecha_pago, fecha_vencimiento, metodo_pago, estado) VALUES
-(3, 1500.00, 'MENSUAL', '2024-11-01', '2024-12-01', 'TARJETA', 'ACTIVO');
+--
+-- Dumping data for table `pagos`
+--
 
--- ASISTENCIAS (Felix ha asistido 2 veces)
-INSERT INTO asistencias (id_cliente, fecha, hora_entrada, hora_salida) VALUES
-(3, '2024-11-18', '07:00:00', '08:30:00'),
-(3, '2024-11-20', '18:00:00', '19:15:00');
+LOCK TABLES `pagos` WRITE;
+/*!40000 ALTER TABLE `pagos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pagos` ENABLE KEYS */;
+UNLOCK TABLES;
 
--- ============================================
--- VERIFICACIÓN
--- ============================================
-SELECT '✅ Base de datos creada exitosamente' AS Status;
-SELECT 'Usuarios creados:' AS Info, COUNT(*) AS Total FROM usuarios;
-SELECT 'Clases creadas:' AS Info, COUNT(*) AS Total FROM clases;
-SELECT 'Rutinas creadas:' AS Info, COUNT(*) AS Total FROM rutinas;
+--
+-- Table structure for table `rutinas`
+--
+
+DROP TABLE IF EXISTS `rutinas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `rutinas` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `descripcion` text,
+  `id_cliente` bigint NOT NULL,
+  `id_entrenador` bigint NOT NULL,
+  `objetivo` varchar(255) DEFAULT NULL,
+  `dias_semana` varchar(255) DEFAULT NULL,
+  `duracion_semanas` int DEFAULT NULL,
+  `activa` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_rutina_cliente` (`id_cliente`),
+  KEY `fk_rutina_entrenador` (`id_entrenador`),
+  CONSTRAINT `fk_rutina_cliente` FOREIGN KEY (`id_cliente`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rutina_entrenador` FOREIGN KEY (`id_entrenador`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rutinas`
+--
+
+LOCK TABLES `rutinas` WRITE;
+/*!40000 ALTER TABLE `rutinas` DISABLE KEYS */;
+INSERT INTO `rutinas` VALUES (6,'Rutina para ganar masa muscular','',26,2,'Ganar 20 kg masa muscular','Lunes, Martes, Viernes',30,1,'2025-12-02 22:54:06','2025-12-02 22:54:06');
+/*!40000 ALTER TABLE `rutinas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `usuarios`
+--
+
+DROP TABLE IF EXISTS `usuarios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `usuarios` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `telefono` varchar(20) DEFAULT NULL,
+  `fecha_ingreso` date DEFAULT NULL,
+  `objetivo` varchar(100) DEFAULT NULL,
+  `rol` enum('ADMIN','ENTRENADOR','CLIENTE') NOT NULL DEFAULT 'CLIENTE',
+  `activo` tinyint(1) NOT NULL DEFAULT '1',
+  `id_entrenador` bigint DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `fk_usuario_entrenador` (`id_entrenador`),
+  CONSTRAINT `fk_usuario_entrenador` FOREIGN KEY (`id_entrenador`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usuarios`
+--
+
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'Gilberto Castillo','gilberto@gym.com','admin123','809-111-1111','2024-01-01','','ADMIN',1,NULL,'2025-12-02 02:30:51','2025-12-02 21:49:49'),(2,'Gaudi Valera','gaudi@gym.com','trainer123','809-222-1111','2024-01-05','','ENTRENADOR',1,NULL,'2025-12-02 02:30:51','2025-12-02 05:41:02'),(26,'Josairy Rodriguez','josairy@gym.com','josairygym','8295421256','2025-12-02','Ganancia muscular','CLIENTE',1,2,'2025-12-02 22:52:57','2025-12-02 22:52:57'),(27,'Felix Sanchez','felisanche@gym.com','felisanchez','8492345123','2025-12-02','Pérdida de peso','CLIENTE',1,NULL,'2025-12-02 22:56:38','2025-12-02 22:56:38'),(28,'Eduardo Castro','eduucastro@gym.com','educastro','8094572123','2025-12-02','Pérdida de peso','CLIENTE',1,2,'2025-12-02 22:57:16','2025-12-02 22:57:16');
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2025-12-02 22:21:03

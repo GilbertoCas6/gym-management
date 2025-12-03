@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Progreso de mis Clientes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard/entrenador}">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto text-white">
+            <i class="fas fa-user"></i>
+            <span th:text="${usuario.nombre}">Entrenador</span>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+    <main class="main-content">
+        <div class="content-header">
+            <h1><i class="fas fa-chart-line"></i> Progreso de mis Clientes</h1>
+            <p class="text-muted">
+                Cálculo estimado según tiempo en el gimnasio y el objetivo configurado para cada cliente
+                (ganancia muscular o pérdida de peso).
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-body table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Email</th>
+                        <th>Objetivo</th>
+                        <th>Semanas activo</th>
+                        <th>Cambio estimado (lbs)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${progresos}">
+                        <td th:text="${p.cliente.nombre}"></td>
+                        <td th:text="${p.cliente.email}"></td>
+                        <td th:text="${p.cliente.objetivo != null ? p.cliente.objetivo : 'Salud general'}"></td>
+                        <td th:text="${p.semanasActivas}"></td>
+                        <td>
+                            <span th:if="${p.cambioLibras > 0}"
+                                  class="text-success"
+                                  th:text="${'+' + #numbers.formatDecimal(p.cambioLibras, 1, 1)}"></span>
+                            <span th:if="${p.cambioLibras < 0}"
+                                  class="text-danger"
+                                  th:text="${#numbers.formatDecimal(p.cambioLibras, 1, 1)}"></span>
+                            <span th:if="${p.cambioLibras == 0}"
+                                  class="text-muted">0.0</span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(progresos)}">
+                        <td colspan="5" class="text-center text-muted">
+                            No tienes clientes asignados todavía.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://kit.fontawesome.com/a2e0e6ad59.js" crossorigin="anonymous"></script>
+</body>
+</html>

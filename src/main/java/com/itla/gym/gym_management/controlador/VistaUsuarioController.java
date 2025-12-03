@@ -1,4 +1,6 @@
 package com.itla.gym.gym_management.controlador;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.itla.gym.gym_management.modelo.Usuario;
 import com.itla.gym.gym_management.servicio.UsuarioServicio;
@@ -32,14 +34,12 @@ public class VistaUsuarioController {
     }
 
     @PostMapping("/crear")
-    public String crearUsuario(
-            @ModelAttribute Usuario usuario,
-            RedirectAttributes redirectAttributes
-    ) {
+    public String crearUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+
         try {
-            if (usuarioServicio.existeEmail(usuario.getEmail())) {
-                redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
-                return "redirect:/admin/usuarios";
+            // Si viene vacío desde el form, MySQL no acepta ""
+            if (usuario.getFechaIngreso() != null && usuario.getFechaIngreso().trim().isEmpty()) {
+                usuario.setFechaIngreso(null);
             }
 
             usuarioServicio.guardarUsuario(usuario);
@@ -47,42 +47,65 @@ public class VistaUsuarioController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al crear usuario: " + e.getMessage());
         }
+
         return "redirect:/admin/usuarios";
     }
+
 
     @PostMapping("/editar/{id}")
     public String editarUsuario(
             @PathVariable Long id,
-            @ModelAttribute Usuario usuario,
+            @RequestParam String nombre,
+            @RequestParam String email,
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) String telefono,
+            @RequestParam("rol") Usuario.Rol rol,
+            @RequestParam(value = "fechaIngreso", required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaIngreso,
+            @RequestParam(required = false) String objetivo,
+            @RequestParam(value = "idEntrenador", required = false) Long idEntrenador,
+            @RequestParam(value = "activo", defaultValue = "false") boolean activo,
             RedirectAttributes redirectAttributes
     ) {
         try {
-            Usuario usuarioExistente = usuarioServicio.buscarPorId(id);
-            if (usuarioExistente == null) {
+            // Buscar el usuario existente
+            Usuario usuario = usuarioServicio.buscarPorId(id);
+            if (usuario == null) {
                 redirectAttributes.addFlashAttribute("error", "Usuario no encontrado");
                 return "redirect:/admin/usuarios";
             }
 
-            // Verificar email duplicado
-            if (!usuarioExistente.getEmail().equals(usuario.getEmail())
-                    && usuarioServicio.existeEmail(usuario.getEmail())) {
-                redirectAttributes.addFlashAttribute("error", "El correo ya está en uso");
-                return "redirect:/admin/usuarios";
+            // Campos básicos
+            usuario.setNombre(nombre);
+            usuario.setEmail(email);
+            usuario.setTelefono(telefono);
+            usuario.setRol(rol);
+
+            // Solo cambia la contraseña si el campo no viene vacío
+            if (password != null && !password.isBlank()) {
+                usuario.setPassword(password);
             }
 
-            // Si no se proporciona password, mantener el existente
-            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
-                usuario.setPassword(usuarioExistente.getPassword());
-            }
+            // Campos específicos de clientes
+            usuario.setFechaIngreso(fechaIngreso != null ? fechaIngreso.toString() : null);
 
-            usuario.setId(id);
+            usuario.setObjetivo(objetivo);
+            usuario.setIdEntrenador(idEntrenador);
+
+            // 🔴 IMPORTANTE: actualizar el estado activo
+            usuario.setActivo(activo);
+
+            // Guardar cambios
             usuarioServicio.guardarUsuario(usuario);
             redirectAttributes.addFlashAttribute("success", "Usuario actualizado exitosamente");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al actualizar usuario: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error",
+                    "Error al actualizar usuario: " + e.getMessage());
         }
+
         return "redirect:/admin/usuarios";
     }
+
 
     @PostMapping("/eliminar/{id}")
     public String eliminarUsuario(

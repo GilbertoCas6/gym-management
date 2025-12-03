@@ -29,29 +29,34 @@
 </nav>
 
 <div class="dashboard-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/dashboard}"><i class="fas fa-home"></i> Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" th:href="@{/admin/usuarios}"><i class="fas fa-users"></i> Usuarios</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/admin/clases}"><i class="fas fa-calendar-alt"></i> Clases</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-dumbbell"></i> Rutinas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-money-bill-wave"></i> Pagos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-chart-line"></i> Reportes</a>
-            </li>
-        </ul>
-    </aside>
+<!--    &lt;!&ndash; Sidebar &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul class="nav flex-column">-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/dashboard}"><i class="fas fa-home"></i> Dashboard</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link active" th:href="@{/admin/usuarios}"><i class="fas fa-users"></i> Usuarios</a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/clases}"><i class="fas fa-calendar-alt"></i> Clases</a>-->
+<!--            </li>-->
+<!--            &lt;!&ndash; RUTINAS (ACTIVADA) &ndash;&gt;-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/rutinas}">-->
+<!--                    <i class="fas fa-dumbbell"></i> Rutinas-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/pagos}">-->
+<!--                    <i class="fas fa-money-bill-wave"></i> Pagos-->
+<!--                </a>-->
+<!--            </li>-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link disabled" href="#" style="opacity: 0.5;"><i class="fas fa-chart-line"></i> Reportes</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </aside>-->
 
     <!-- Contenido Principal -->
     <main class="main-content">
@@ -116,7 +121,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>N°</th>       <!-- ya no “ID” -->
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Teléfono</th>
@@ -125,59 +130,65 @@
                             <th>Acciones</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:each="user : ${usuarios}">
-                            <td th:text="${user.id}"></td>
-                            <td th:text="${user.nombre}"></td>
-                            <td th:text="${user.email}"></td>
-                            <td th:text="${user.telefono}"></td>
-                            <td>
-                                        <span th:if="${user.rol.name() == 'ADMIN'}" class="badge bg-danger">
-                                            <i class="fas fa-user-shield"></i> ADMIN
-                                        </span>
-                                <span th:if="${user.rol.name() == 'ENTRENADOR'}" class="badge bg-warning">
-                                            <i class="fas fa-dumbbell"></i> ENTRENADOR
-                                        </span>
-                                <span th:if="${user.rol.name() == 'CLIENTE'}" class="badge bg-info">
-                                            <i class="fas fa-user"></i> CLIENTE
-                                        </span>
-                            </td>
-                            <td>
-                                        <span th:if="${user.activo}" class="badge bg-success">
-                                            <i class="fas fa-check-circle"></i> ACTIVO
-                                        </span>
-                                <span th:unless="${user.activo}" class="badge bg-secondary">
-                                            <i class="fas fa-times-circle"></i> INACTIVO
-                                        </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-warning btn-editar"
-                                        th:data-id="${user.id}"
-                                        th:data-nombre="${user.nombre}"
-                                        th:data-email="${user.email}"
-                                        th:data-telefono="${user.telefono}"
-                                        th:data-rol="${user.rol.name()}"
-                                        th:data-activo="${user.activo}"
-                                        th:data-fecha="${user.fechaIngreso}"
-                                        th:data-objetivo="${user.objetivo}"
-                                        th:data-entrenador="${user.idEntrenador}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEditarUsuario"
-                                        title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
 
-                                <button class="btn btn-sm btn-danger btn-eliminar"
-                                        th:data-id="${user.id}"
-                                        th:data-nombre="${user.nombre}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalEliminarUsuario"
-                                        title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                        <tbody>
+                        <tr th:each="usuario, iter : ${usuarios}">
+                            <!-- Columna de N° consecutivo -->
+                            <td th:text="${iter.index + 1}"></td>
+
+                            <!-- Nombre -->
+                            <td th:text="${usuario.nombre}"></td>
+
+                            <!-- Email -->
+                            <td th:text="${usuario.email}"></td>
+
+                            <!-- Teléfono -->
+                            <td th:text="${usuario.telefono}"></td>
+
+                            <!-- Rol -->
+                            <td>
+        <span th:if="${usuario.rol.name() == 'ADMIN'}" class="badge bg-danger">
+            <i class="fas fa-user-shield"></i> ADMIN
+        </span>
+                                <span th:if="${usuario.rol.name() == 'ENTRENADOR'}" class="badge bg-warning text-dark">
+            <i class="fas fa-dumbbell"></i> ENTRENADOR
+        </span>
+                                <span th:if="${usuario.rol.name() == 'CLIENTE'}" class="badge bg-info text-white">
+            <i class="fas fa-user"></i> CLIENTE
+        </span>
+                            </td>
+
+                            <!-- Estado -->
+                            <td>
+        <span th:if="${usuario.activo}" class="badge bg-success">
+            <i class="fas fa-check-circle"></i> ACTIVO
+        </span>
+                                <span th:unless="${usuario.activo}" class="badge bg-secondary">
+            <i class="fas fa-times-circle"></i> INACTIVO
+        </span>
+                            </td>
+
+                            <!-- Acciones -->
+                            <td>
+                                <!-- Editar -->
+                                <a th:href="@{'/admin/usuarios/editar/' + ${usuario.id}}"
+                                   class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+
+                                <!-- Eliminar -->
+                                <form th:action="@{'/admin/usuarios/eliminar/' + ${usuario.id}}"
+                                      method="post"
+                                      style="display:inline-block;"
+                                      onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                         </tbody>
+
                     </table>
                 </div>
             </div>
@@ -189,49 +200,67 @@
 <div class="modal fade" id="modalCrearUsuario" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-user-plus"></i> Crear Nuevo Usuario</h5>
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus"></i> Crear Nuevo Usuario
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
             <form th:action="@{/admin/usuarios/crear}" method="post">
                 <div class="modal-body">
                     <div class="row">
+                        <!-- Nombre -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nombre Completo *</label>
                             <input type="text" class="form-control" name="nombre" required>
                         </div>
+
+                        <!-- Email -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email *</label>
                             <input type="email" class="form-control" name="email" required>
                         </div>
                     </div>
+
                     <div class="row">
+                        <!-- Password -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Contraseña *</label>
                             <input type="password" class="form-control" name="password" required minlength="6">
                         </div>
+
+                        <!-- Teléfono -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Teléfono</label>
                             <input type="tel" class="form-control" name="telefono" placeholder="809-123-4567">
                         </div>
                     </div>
+
                     <div class="row">
+                        <!-- Rol -->
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Rol *</label>
-                            <select class="form-control" name="rol" id="rolSelectCrear" required>
+                            <select class="form-select" name="rol" id="rolSelectCrear" required>
+                                <option value="">Seleccione un rol</option>
                                 <option value="ADMIN">Administrador</option>
                                 <option value="ENTRENADOR">Entrenador</option>
                                 <option value="CLIENTE" selected>Cliente</option>
                             </select>
                         </div>
+
+                        <!-- Fecha de Ingreso (para clientes) -->
                         <div class="col-md-4 mb-3" id="campoFechaIngresoCrear">
                             <label class="form-label">Fecha de Ingreso</label>
                             <input type="date" class="form-control" name="fechaIngreso">
                         </div>
+
+                        <!-- Entrenador asignado (para clientes) -->
                         <div class="col-md-4 mb-3" id="campoEntrenadorCrear">
                             <label class="form-label">Entrenador Asignado</label>
-                            <select class="form-control" name="idEntrenador">
-                                <option value="">Sin asignar</option>
+                            <select class="form-select" name="idEntrenador">
+                                <option value="">Sin Entrenador</option>
                                 <option th:each="entrenador : ${entrenadores}"
                                         th:value="${entrenador.id}"
                                         th:text="${entrenador.nombre}">
@@ -239,10 +268,12 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Objetivo (para clientes) -->
                     <div class="row" id="campoObjetivoCrear">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Objetivo</label>
-                            <select class="form-control" name="objetivo">
+                            <select class="form-select" name="objetivo">
                                 <option value="">Seleccionar...</option>
                                 <option value="Pérdida de peso">Pérdida de peso</option>
                                 <option value="Ganancia muscular">Ganancia muscular</option>
@@ -252,11 +283,14 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Activo -->
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" name="activo" checked>
                         <label class="form-check-label">Usuario Activo</label>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">
@@ -272,49 +306,68 @@
 <div class="modal fade" id="modalEditarUsuario" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
+
             <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-edit"></i> Editar Usuario</h5>
+                <h5 class="modal-title">
+                    <i class="fas fa-edit"></i> Editar Usuario
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
             <form id="formEditarUsuario" method="post">
                 <input type="hidden" id="editId" name="id">
+
                 <div class="modal-body">
                     <div class="row">
+                        <!-- Nombre -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Nombre Completo *</label>
                             <input type="text" class="form-control" id="editNombre" name="nombre" required>
                         </div>
+
+                        <!-- Email -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Email *</label>
                             <input type="email" class="form-control" id="editEmail" name="email" required>
                         </div>
                     </div>
+
                     <div class="row">
+                        <!-- Password -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Contraseña (dejar vacío para no cambiar)</label>
                             <input type="password" class="form-control" id="editPassword" name="password">
                         </div>
+
+                        <!-- Teléfono -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Teléfono</label>
                             <input type="tel" class="form-control" id="editTelefono" name="telefono">
                         </div>
                     </div>
+
                     <div class="row">
+                        <!-- Rol -->
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Rol *</label>
-                            <select class="form-control" id="editRol" name="rol" required>
+                            <select class="form-select" id="editRol" name="rol" required>
+                                <option value="">Seleccione un rol</option>
                                 <option value="ADMIN">Administrador</option>
                                 <option value="ENTRENADOR">Entrenador</option>
                                 <option value="CLIENTE">Cliente</option>
                             </select>
                         </div>
+
+                        <!-- Fecha Ingreso -->
                         <div class="col-md-4 mb-3" id="campoFechaIngresoEditar">
                             <label class="form-label">Fecha de Ingreso</label>
                             <input type="date" class="form-control" id="editFechaIngreso" name="fechaIngreso">
                         </div>
+
+                        <!-- Entrenador asignado -->
                         <div class="col-md-4 mb-3" id="campoEntrenadorEditar">
                             <label class="form-label">Entrenador Asignado</label>
-                            <select class="form-control" id="editIdEntrenador" name="idEntrenador">
+                            <select class="form-select" id="editIdEntrenador" name="idEntrenador">
                                 <option value="">Sin asignar</option>
                                 <option th:each="entrenador : ${entrenadores}"
                                         th:value="${entrenador.id}"
@@ -323,10 +376,12 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Objetivo -->
                     <div class="row" id="campoObjetivoEditar">
                         <div class="col-md-12 mb-3">
                             <label class="form-label">Objetivo</label>
-                            <select class="form-control" id="editObjetivo" name="objetivo">
+                            <select class="form-select" id="editObjetivo" name="objetivo">
                                 <option value="">Seleccionar...</option>
                                 <option value="Pérdida de peso">Pérdida de peso</option>
                                 <option value="Ganancia muscular">Ganancia muscular</option>
@@ -336,11 +391,14 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Activo -->
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="editActivo" name="activo">
                         <label class="form-check-label">Usuario Activo</label>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-warning">
@@ -348,9 +406,11 @@
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
+
 
 <!-- Modal: Eliminar Usuario -->
 <div class="modal fade" id="modalEliminarUsuario" tabindex="-1">

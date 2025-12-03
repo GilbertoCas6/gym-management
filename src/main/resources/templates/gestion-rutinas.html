@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Rutinas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-admin.css}">
+
+    <!-- Bootstrap y estilos globales (igual que dashboard-admin) -->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <link rel="stylesheet"-->
+<!--          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" th:href="@{/css/base.css}">-->
+<!--    <link rel="stylesheet" th:href="@{/css/dashboard-admin.css}">-->
+    <!-- Estilos específicos de rutinas -->
+<!--    <link rel="stylesheet" th:href="@{/css/gestion-rutinas.css}">-->
+</head>
+<body>
+
+<!-- Navbar Superior (igual que dashboard-admin) -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard/admin}">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+            <span class="text-white me-3">
+                <i class="fas fa-user-shield"></i>
+                <span th:text="${usuario.nombre}">Admin</span>
+            </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+<!--    &lt;!&ndash; Sidebar (igual que admin, con Rutinas activo) &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul class="nav flex-column">-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/dashboard/admin}">-->
+<!--                    <i class="fas fa-home"></i> Dashboard-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/usuarios}">-->
+<!--                    <i class="fas fa-users"></i> Usuarios-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/clases}">-->
+<!--                    <i class="fas fa-calendar-alt"></i> Clases-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link active" th:href="@{/admin/rutinas}">-->
+<!--                    <i class="fas fa-dumbbell"></i> Rutinas-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/pagos}">-->
+<!--                    <i class="fas fa-money-bill-wave"></i> Pagos-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link disabled" href="#" style="opacity: 0.5;">-->
+<!--                    <i class="fas fa-chart-line"></i> Reportes-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </aside>-->
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <div class="content-header mb-3">
+            <h1><i class="fas fa-clipboard-list"></i> Gestión de Rutinas</h1>
+            <p class="text-muted">Administra las rutinas asignadas a clientes por los entrenadores.</p>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <!-- Tarjetas de resumen -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="mb-0" th:text="${rutinas.size()}">0</h2>
+                        <p class="text-muted mb-0">Total Rutinas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h2 class="mb-0" th:text="${rutinasActivas}">0</h2>
+                        <p class="text-muted mb-0">Rutinas Activas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón crear -->
+        <div class="mb-3">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalCrearRutina">
+                <i class="fas fa-plus-circle"></i> Crear Nueva Rutina
+            </button>
+        </div>
+
+        <!-- Modal Editar Rutina -->
+        <div class="modal fade" id="modalEditarRutina" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="post" id="formEditarRutina">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Editar Rutina</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body row g-3">
+
+                            <input type="hidden" id="editId" name="id">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="editNombre" name="nombre" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Objetivo</label>
+                                <input type="text" class="form-control" id="editObjetivo" name="objetivo">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente</label>
+                                <select class="form-select" id="editCliente" name="idCliente" required>
+                                    <option value="">Seleccione un cliente</option>
+                                    <option th:each="c : ${clientes}"
+                                            th:value="${c.id}"
+                                            th:text="${c.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Entrenador</label>
+                                <select class="form-select" id="editEntrenador" name="idEntrenador" required>
+                                    <option value="">Seleccione un entrenador</option>
+                                    <option th:each="e : ${entrenadores}"
+                                            th:value="${e.id}"
+                                            th:text="${e.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Días de la semana</label>
+                                <input type="text" class="form-control" id="editDias" name="diasSemana">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Duración (semanas)</label>
+                                <input type="number" class="form-control" id="editSemanas" name="duracionSemanas">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" rows="3" id="editDescripcion" name="descripcion"></textarea>
+                            </div>
+
+                            <div class="col-12 form-check mt-2">
+                                <input type="checkbox"
+                                       class="form-check-input"
+                                       id="editActiva"
+                                       onchange="document.getElementById('editActivaHidden').value = this.checked ? 'true' : 'false';">
+                                <input type="hidden" name="activa" id="editActivaHidden" value="true">
+                                <label class="form-check-label" for="editActiva">Rutina activa</label>
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Tabla de rutinas -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Lista de Rutinas</h5>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Cliente</th>
+                        <th>Entrenador</th>
+                        <th>Objetivo</th>
+                        <th>Días</th>
+                        <th>Semanas</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="rutina : ${rutinas}">
+                        <td th:text="${rutina.id}"></td>
+                        <td th:text="${rutina.nombre}"></td>
+                        <td th:text="${rutina.cliente != null ? rutina.cliente.nombre : 'N/A'}"></td>
+                        <td th:text="${rutina.entrenador != null ? rutina.entrenador.nombre : 'N/A'}"></td>
+                        <td th:text="${rutina.objetivo}"></td>
+                        <td th:text="${rutina.diasSemana}"></td>
+                        <td th:text="${rutina.duracionSemanas}"></td>
+                        <td>
+                            <span th:if="${rutina.activa}" class="badge bg-success">ACTIVA</span>
+                            <span th:if="${!rutina.activa}" class="badge bg-secondary">INACTIVA</span>
+                        </td>
+                        <td class="text-center">
+
+                            <!-- EDITAR -->
+                            <button class="btn btn-sm btn-primary btn-editar-rutina"
+                                    type="button"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEditarRutina"
+                                    th:data-id="${rutina.id}"
+                                    th:data-nombre="${rutina.nombre}"
+                                    th:data-objetivo="${rutina.objetivo}"
+                                    th:data-idcliente="${rutina.cliente != null ? rutina.cliente.id : ''}"
+                                    th:data-identrenador="${rutina.entrenador != null ? rutina.entrenador.id : ''}"
+                                    th:data-dias="${rutina.diasSemana}"
+                                    th:data-semanas="${rutina.duracionSemanas}"
+                                    th:data-descripcion="${rutina.descripcion}"
+                                    th:data-activa="${rutina.activa}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+
+                            <!-- Eliminar -->
+                            <form th:action="@{'/admin/rutinas/eliminar/' + ${rutina.id}}" method="post"
+                                  style="display:inline;"
+                                  onsubmit="return confirm('¿Seguro que quieres eliminar esta rutina?');">
+                                <button class="btn btn-sm btn-danger" type="submit">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+
+                        </td>
+
+                    </tr>
+                    <tr th:if="${rutinas.size() == 0}">
+                        <td colspan="9" class="text-center text-muted">
+                            No hay rutinas registradas.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal Crear Rutina -->
+        <div class="modal fade" id="modalCrearRutina" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form th:action="@{/admin/rutinas/crear}" method="post" th:object="${nuevaRutina}">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Crear Rutina</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Objetivo</label>
+                                <input type="text" class="form-control" th:field="*{objetivo}">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Cliente</label>
+                                <select class="form-select" th:field="*{idCliente}" required>
+                                    <option value="">Seleccione un cliente</option>
+                                    <option th:each="c : ${clientes}"
+                                            th:value="${c.id}"
+                                            th:text="${c.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Entrenador</label>
+                                <select class="form-select" th:field="*{idEntrenador}" required>
+                                    <option value="">Seleccione un entrenador</option>
+                                    <option th:each="e : ${entrenadores}"
+                                            th:value="${e.id}"
+                                            th:text="${e.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Días de la semana</label>
+                                <input type="text" class="form-control" th:field="*{diasSemana}"
+                                       placeholder="Ej: Lunes,Miércoles,Viernes">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Duración (semanas)</label>
+                                <input type="number" class="form-control" th:field="*{duracionSemanas}">
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" rows="3" th:field="*{descripcion}"></textarea>
+                            </div>
+
+                            <div class="col-12 form-check">
+                                <input class="form-check-input" type="checkbox" th:field="*{activa}" checked>
+                                <label class="form-check-label">Rutina activa</label>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Rutina</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/gestion-rutinas.js}"></script>
+</body>
+</html>

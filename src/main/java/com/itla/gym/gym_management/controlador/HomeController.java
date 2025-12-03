@@ -74,23 +74,23 @@ public class HomeController {
         return "dashboard-admin";
     }
 
-    @GetMapping("/dashboard/entrenador")
-    public String dashboardEntrenador(HttpSession session, Model model) {
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        if (usuario == null || usuario.getRol() != Usuario.Rol.ENTRENADOR) {
-            return "redirect:/login";
-        }
-
-        // Obtener clientes asignados a este entrenador
-        List<Usuario> misClientes = usuarioServicio.listarClientesDeEntrenador(usuario.getId());
-
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("misClientes", misClientes);
-        model.addAttribute("totalClientes", misClientes.size());
-
-        return "dashboard-entrenador";
-    }
+//    @GetMapping("/dashboard/entrenador")
+//    public String dashboardEntrenador(HttpSession session, Model model) {
+//        Usuario usuario = (Usuario) session.getAttribute("usuario");
+//
+//        if (usuario == null || usuario.getRol() != Usuario.Rol.ENTRENADOR) {
+//            return "redirect:/login";
+//        }
+//
+//        // Obtener clientes asignados a este entrenador
+//        List<Usuario> misClientes = usuarioServicio.listarClientesDeEntrenador(usuario.getId());
+//
+//        model.addAttribute("usuario", usuario);
+//        model.addAttribute("misClientes", misClientes);
+//        model.addAttribute("totalClientes", misClientes.size());
+//
+//        return "dashboard-entrenador";
+//    }
 
     @GetMapping("/dashboard/cliente")
     public String dashboardCliente(HttpSession session, Model model) {
