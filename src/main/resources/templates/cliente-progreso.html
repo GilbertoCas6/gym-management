@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Progreso</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos base del proyecto -->
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard/cliente}">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+            <span class="text-white me-3">
+                <i class="fas fa-user"></i>
+                <span th:text="${usuario.nombre}">Cliente</span>
+            </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+
+<!--    &lt;!&ndash; SIDEBAR CLIENTE &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul class="nav flex-column">-->
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/dashboard/cliente}">-->
+<!--                    <i class="fas fa-home"></i> Dashboard-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/cliente/rutina}">-->
+<!--                    <i class="fas fa-clipboard-list"></i> Mi Rutina-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/cliente/clases}">-->
+<!--                    <i class="fas fa-calendar-plus"></i> Inscribir Clase-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link active" th:href="@{/cliente/progreso}">-->
+<!--                    <i class="fas fa-chart-line"></i> Mi Progreso-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/pagos}">-->
+<!--                    <i class="fas fa-file-invoice-dollar"></i> Mis Pagos-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </aside>-->
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+
+        <div class="content-header">
+            <h1>
+                <i class="fas fa-chart-line"></i> Mi Progreso
+            </h1>
+            <p class="text-muted">
+                Resumen estimado de tu avance en función de tu objetivo y del tiempo que llevas en el gimnasio.
+            </p>
+        </div>
+
+        <!-- TARJETAS DE RESUMEN -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card stat-primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 th:text="${diasActivos}">0</h3>
+                        <p>Días desde tu ingreso</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card stat-card stat-success">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 th:text="${semanasActivas}">0</h3>
+                        <p>Semanas de progreso</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card stat-card stat-warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 th:text="${cambioLibras}">0</h3>
+                        <p>Cambio estimado (libras)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETALLE -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Detalle de tu progreso</h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    Objetivo actual:
+                    <strong th:text="${objetivo}">Salud general</strong>
+                </p>
+                <p class="mb-0">
+                    Este módulo es solo una <strong>simulación</strong> para la presentación:
+                    se calculan los días desde tu fecha de ingreso y se estima el cambio
+                    de peso según tu objetivo (pérdida o ganancia). No usa datos reales
+                    de peso todavía.
+                </p>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

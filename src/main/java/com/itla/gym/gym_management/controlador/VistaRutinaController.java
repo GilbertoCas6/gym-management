@@ -118,5 +118,7 @@ public class VistaRutinaController {
         }
         return "redirect:/admin/rutinas";
     }
+
+
 }
 

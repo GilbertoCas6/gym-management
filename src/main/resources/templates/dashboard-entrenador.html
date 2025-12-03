@@ -177,15 +177,28 @@
                                         <span th:unless="${cliente.activo}" class="badge bg-secondary">
                                                     <i class="fas fa-times-circle"></i> INACTIVO
                                                 </span>
-                                    </td>
                                     <td>
-                                        <button class="btn btn-sm btn-info" disabled title="Ver perfil">
+                                        <!-- Ver perfil del cliente -->
+                                        <a th:href="@{/entrenador/clientes/{id}(id=${cliente.id})}"
+                                           class="btn btn-sm btn-info"
+                                           title="Ver perfil del cliente">
                                             <i class="fas fa-eye"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-warning" disabled title="Asignar rutina">
-                                            <i class="fas fa-clipboard-list"></i>
-                                        </button>
+                                        </a>
+
+                                        <!-- Desasignar cliente del entrenador -->
+                                        <form th:action="@{/entrenador/clientes/{id}/desasignar(id=${cliente.id})}"
+                                              method="post"
+                                              style="display:inline;">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('¿Seguro que quieres quitar este cliente de tu lista?');"
+                                                    title="Quitar cliente">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                     </td>
+
+
                                 </tr>
                                 </tbody>
                             </table>
@@ -204,35 +217,45 @@
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
+
+                            <!-- Nueva Rutina -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
+                                <a th:href="@{/entrenador/rutinas/nueva}" class="btn btn-outline-primary w-100 p-4">
                                     <i class="fas fa-clipboard-list fa-2x d-block mb-2"></i>
                                     <span>Nueva Rutina</span>
                                 </a>
                             </div>
+
+                            <!-- Crear Clase -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
+                                <a th:href="@{/entrenador/clases/nueva}" class="btn btn-outline-primary w-100 p-4">
                                     <i class="fas fa-calendar-plus fa-2x d-block mb-2"></i>
                                     <span>Crear Clase</span>
                                 </a>
                             </div>
+
+                            <!-- Ver Progreso de mis clientes -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
+                                <a th:href="@{/entrenador/progreso}" class="btn btn-outline-primary w-100 p-4">
                                     <i class="fas fa-chart-line fa-2x d-block mb-2"></i>
                                     <span>Ver Progreso</span>
                                 </a>
                             </div>
+
+                            <!-- Asistencias -->
                             <div class="col-md-3">
-                                <a href="#" class="btn btn-outline-secondary w-100 p-3 disabled">
-                                    <i class="fas fa-check-circle fa-2x d-block mb-2"></i>
+                                <a th:href="@{/entrenador/asistencias}" class="btn btn-outline-secondary w-100 p-4">
+                                    <i class="fas fa-user-check fa-2x d-block mb-2"></i>
                                     <span>Asistencias</span>
                                 </a>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Próximas Clases -->
         <div class="row g-3">

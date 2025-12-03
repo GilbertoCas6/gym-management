@@ -16,6 +16,7 @@ public class AuthController {
     @Autowired
     private UsuarioServicio usuarioServicio;
 
+    // ---------- LOGIN ----------
     @GetMapping("/login")
     public String mostrarLogin() {
         return "login";
@@ -31,11 +32,13 @@ public class AuthController {
         Usuario usuario = usuarioServicio.buscarPorEmail(email);
 
         if (usuario != null && usuario.getPassword().equals(password)) {
+
             if (!usuario.isActivo()) {
                 model.addAttribute("error", "Tu cuenta está inactiva. Contacta al administrador.");
                 return "login";
             }
 
+            // Guardar en sesión
             session.setAttribute("usuario", usuario);
 
             // Redirigir según el rol
@@ -55,12 +58,14 @@ public class AuthController {
         return "login";
     }
 
+    // ---------- LOGOUT ----------
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
 
+    // ---------- REGISTRO ----------
     @GetMapping("/registro")
     public String mostrarRegistro() {
         return "registro";
@@ -84,7 +89,7 @@ public class AuthController {
         nuevoUsuario.setEmail(email);
         nuevoUsuario.setPassword(password);
         nuevoUsuario.setTelefono(telefono);
-        nuevoUsuario.setRol(Usuario.Rol.CLIENTE);  // Los registros públicos son CLIENTES
+        nuevoUsuario.setRol(Usuario.Rol.CLIENTE); // Registros públicos = CLIENTES
         nuevoUsuario.setActivo(true);
 
         usuarioServicio.guardarUsuario(nuevoUsuario);

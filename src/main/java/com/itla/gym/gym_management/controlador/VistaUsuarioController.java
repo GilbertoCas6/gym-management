@@ -34,14 +34,12 @@ public class VistaUsuarioController {
     }
 
     @PostMapping("/crear")
-    public String crearUsuario(
-            @ModelAttribute Usuario usuario,
-            RedirectAttributes redirectAttributes
-    ) {
+    public String crearUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+
         try {
-            if (usuarioServicio.existeEmail(usuario.getEmail())) {
-                redirectAttributes.addFlashAttribute("error", "El correo ya está registrado");
-                return "redirect:/admin/usuarios";
+            // Si viene vacío desde el form, MySQL no acepta ""
+            if (usuario.getFechaIngreso() != null && usuario.getFechaIngreso().trim().isEmpty()) {
+                usuario.setFechaIngreso(null);
             }
 
             usuarioServicio.guardarUsuario(usuario);
@@ -49,8 +47,10 @@ public class VistaUsuarioController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al crear usuario: " + e.getMessage());
         }
+
         return "redirect:/admin/usuarios";
     }
+
 
     @PostMapping("/editar/{id}")
     public String editarUsuario(

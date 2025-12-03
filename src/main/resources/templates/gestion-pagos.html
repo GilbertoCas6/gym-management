@@ -163,22 +163,37 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Usamos la lista de clientes enviada desde el controlador -->
-                    <tr th:each="c : ${clientes}">
-                        <!-- Fecha demo fija -->
-                        <td>2024-01-01</td>
+                    <tr th:each="c : ${clientesActivos}">
+                        <!-- Fecha (si no tiene, mostramos 2025-12-02 como demo) -->
+                        <td th:text="${c.fechaIngreso != null ? c.fechaIngreso : '2025-12-02'}">2025-12-02</td>
 
                         <!-- Nombre del cliente -->
                         <td th:text="${c.nombre}">Nombre Cliente</td>
 
-                        <!-- Datos de demo -->
+                        <!-- Tipo de membresía fijo: Mensual -->
                         <td>Mensual</td>
-                        <td>Gym + Entrenador</td>
+
+                        <!-- Incluye: Gym solo o Gym + Entrenador -->
+                        <td th:text="${c.idEntrenador} != null ? 'Gym + Entrenador' : 'Solo Gym'">
+                            Gym + Entrenador
+                        </td>
+
+                        <!-- Método (demo) -->
                         <td>Tarjeta</td>
-                        <td>$1,500</td>
-                        <td><span class="badge bg-success">Pagado</span></td>
+
+                        <!-- Monto: 1500 si no tiene entrenador, 2500 si tiene -->
+                        <td>
+                            $<span th:text="${c.idEntrenador} != null ? 2500 : 1500">1500</span>
+                        </td>
+
+                        <!-- Estado -->
+                        <td>
+                            <span class="badge bg-success">Pagado</span>
+                        </td>
                     </tr>
                     </tbody>
+
+
 
                 </table>
             </div>

@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -22,39 +20,37 @@ public class VistaPagoController {
     public String mostrarPagos(HttpSession session, Model model) {
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null) {
+        if (usuario == null || usuario.getRol() != Usuario.Rol.ADMIN) {
             return "redirect:/login";
         }
+
         model.addAttribute("usuario", usuario);
 
-        List<Usuario> clientes = usuarioServicio.obtenerClientes();
-        model.addAttribute("clientes", clientes);
+        // Clientes activos
+        List<Usuario> clientesActivos = usuarioServicio.listarClientesActivos();
+        model.addAttribute("clientesActivos", clientesActivos);
 
-// total de membresías activas = cantidad de clientes
-        int totalMembresiasActivas = clientes.size();
+        int montoSoloGym = 1500;
+        int montoGymEntrenador = 2500;
+
+        int totalMembresiasActivas = clientesActivos.size();
+        int ingresosMensualesEstimados = 0;
+
+        for (Usuario c : clientesActivos) {
+            if (c.getIdEntrenador() == null) {
+                ingresosMensualesEstimados += montoSoloGym;
+            } else {
+                ingresosMensualesEstimados += montoGymEntrenador;
+            }
+        }
+
         model.addAttribute("totalMembresiasActivas", totalMembresiasActivas);
-
-// ingreso mensual estimado: asumimos $1500 por cliente
-        int ingresosMensualesEstimados = totalMembresiasActivas * 1500;
         model.addAttribute("ingresosMensualesEstimados", ingresosMensualesEstimados);
+        model.addAttribute("pagosPendientes", 0);
 
-// pagos pendientes: por ahora 0 (demo)
-        int pagosPendientes = 0;
-        model.addAttribute("pagosPendientes", pagosPendientes);
-
+        model.addAttribute("montoSoloGym", montoSoloGym);
+        model.addAttribute("montoGymEntrenador", montoGymEntrenador);
 
         return "gestion-pagos";
-    }
-
-    @PostMapping("/admin/pagos/simular")
-    public String simularPago(RedirectAttributes redirectAttributes) {
-
-        // Solo demo
-        redirectAttributes.addFlashAttribute(
-                "success",
-                "Pago simulado correctamente (solo demostración)."
-        );
-
-        return "redirect:/admin/pagos";
     }
 }

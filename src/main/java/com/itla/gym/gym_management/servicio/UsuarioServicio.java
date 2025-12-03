@@ -10,14 +10,13 @@ import java.util.List;
 @Service
 public class UsuarioServicio {
 
+    @Autowired
+    private UsuarioRepositorio usuarioRepositorio;
+
+    // Obtener todos los clientes (rol CLIENTE)
     public List<Usuario> obtenerClientes() {
         return usuarioRepositorio.findByRol(Usuario.Rol.CLIENTE);
     }
-
-
-
-    @Autowired
-    private UsuarioRepositorio usuarioRepositorio;
 
     public List<Usuario> listarUsuarios() {
         return usuarioRepositorio.findAll();

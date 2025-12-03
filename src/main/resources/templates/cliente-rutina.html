@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Rutina</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos base del proyecto -->
+    <link rel="stylesheet" th:href="@{/css/base.css}">
+
+    <style>
+        .rutina-header-card {
+            background: linear-gradient(135deg, #007bff, #00bfa6);
+            color: white;
+        }
+        .rutina-header-card h4 {
+            margin-bottom: 0.5rem;
+        }
+        .exercise-section {
+            margin-bottom: 2rem;
+        }
+        .exercise-section h5 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .exercise-card {
+            border-radius: 12px;
+            border: 1px solid #e0e6ed;
+            padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+        .exercise-card h6 {
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+        .exercise-meta {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/dashboard/cliente}">
+            <i class="fas fa-dumbbell"></i> GYM MANAGEMENT
+        </a>
+        <div class="ms-auto d-flex align-items-center">
+                <span class="text-white me-3">
+                    <i class="fas fa-user"></i>
+                    <span th:text="${usuario.nombre}">Cliente</span>
+                </span>
+            <a th:href="@{/logout}" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+<!--    &lt;!&ndash; SIDEBAR CLIENTE &ndash;&gt;-->
+<!--    <aside class="sidebar">-->
+<!--        <ul class="nav flex-column">-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/dashboard/cliente}">-->
+<!--                    <i class="fas fa-home"></i> Dashboard-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link active" th:href="@{/cliente/rutina}">-->
+<!--                    <i class="fas fa-clipboard-list"></i> Mi Rutina-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/cliente/clases}">-->
+<!--                    <i class="fas fa-calendar-plus"></i> Mis Clases-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/cliente/progreso}">-->
+<!--                    <i class="fas fa-chart-line"></i> Mi Progreso-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/admin/pagos}">-->
+<!--                    <i class="fas fa-file-invoice-dollar"></i> Mis Pagos-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            <li class="nav-item">-->
+<!--                <a class="nav-link" th:href="@{/cliente/perfil}">-->
+<!--                    <i class="fas fa-user-cog"></i> Mi Perfil-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--        </ul>-->
+<!--    </aside>-->
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="content-header">
+            <h1>
+                <i class="fas fa-clipboard-list"></i>
+                Mi Rutina Personalizada
+            </h1>
+            <p class="text-muted">
+                Rutina asignada por tu entrenador. Sigue el orden sugerido y revisa los videos para realizar bien la técnica.
+            </p>
+        </div>
+
+        <!-- RESUMEN DE LA RUTINA -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-8">
+                <div class="card rutina-header-card">
+                    <div class="card-body">
+                        <h4 th:text="${nombreRutina}">Rutina Full Body – Nivel Intermedio</h4>
+                        <p class="mb-1">
+                            Objetivo:
+                            <strong th:text="${objetivoRutina}">Ganancia muscular</strong>
+                        </p>
+                        <p class="mb-1">
+                            Entrenador:
+                            <strong th:text="${entrenadorNombre}">Gaudi Valera</strong>
+                        </p>
+                        <p class="mb-0">
+                            Duración:
+                            <strong th:text="${semanasRutina}">12</strong> semanas ·
+                            Frecuencia recomendada: <strong>3–4 días por semana</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5><i class="fas fa-info-circle text-primary"></i> Notas generales</h5>
+                        <ul class="small mb-0">
+                            <li>Calienta 5–10 minutos antes de empezar (bicicleta, caminadora, movilidad).</li>
+                            <li>Descansa 60–90 segundos entre series principales.</li>
+                            <li>Si un ejercicio te molesta, para y consulta a tu entrenador.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIONES DE EJERCICIOS CON VIDEOS -->
+        <div class="row">
+            <div class="col-md-6">
+
+                <!-- PECHO -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-danger"></i> Pecho</h5>
+
+                    <div class="exercise-card">
+                        <h6>Press banca con mancuernas</h6>
+                        <p class="exercise-meta">4 series x 8–10 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=gRVjAtPip0Y"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Aperturas con mancuernas en banco plano</h6>
+                        <p class="exercise-meta">3 series x 10–12 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=eozdVDA78K0"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ESPALDA -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-primary"></i> Espalda</h5>
+
+                    <div class="exercise-card">
+                        <h6>Remo con barra</h6>
+                        <p class="exercise-meta">4 series x 8–10 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=vT2GjY_Umpw"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Jalón al pecho en polea</h6>
+                        <p class="exercise-meta">3 series x 10–12 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=CAwf7n6Luuc"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+                <!-- HOMBROS -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-warning"></i> Hombros</h5>
+
+                    <div class="exercise-card">
+                        <h6>Press militar con mancuernas</h6>
+                        <p class="exercise-meta">3 series x 8–10 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=B-aVuyhvLHU"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Elevaciones laterales</h6>
+                        <p class="exercise-meta">3 series x 12–15 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=kDqklk1ZESo"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <!-- PIERNAS -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-success"></i> Piernas</h5>
+
+                    <div class="exercise-card">
+                        <h6>Sentadilla con barra</h6>
+                        <p class="exercise-meta">4 series x 6–8 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=Dy28eq2PjcM"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Peso muerto rumano</h6>
+                        <p class="exercise-meta">3 series x 8–10 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=2SHsk9AzdjA"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+                <!-- BRAZOS -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-info"></i> Brazos</h5>
+
+                    <div class="exercise-card">
+                        <h6>Curl de bíceps con mancuernas</h6>
+                        <p class="exercise-meta">3 series x 10–12 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=ykJmrZ5v0Oo"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Extensiones de tríceps en polea</h6>
+                        <p class="exercise-meta">3 series x 10–12 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=2-LAMcpzODU"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CORE -->
+                <div class="exercise-section">
+                    <h5><i class="fas fa-dumbbell text-secondary"></i> Core</h5>
+
+                    <div class="exercise-card">
+                        <h6>Plancha frontal</h6>
+                        <p class="exercise-meta">3 series x 30–40 segundos</p>
+                        <a href="https://www.youtube.com/watch?v=pSHjTRCQxIw"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+
+                    <div class="exercise-card">
+                        <h6>Crunch en máquina o colchoneta</h6>
+                        <p class="exercise-meta">3 series x 15–20 repeticiones</p>
+                        <a href="https://www.youtube.com/watch?v=Xyd_fa5zoEU"
+                           target="_blank"
+                           class="btn btn-sm btn-outline-primary">
+                            Ver video
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
